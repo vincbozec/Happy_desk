@@ -35,26 +35,38 @@ jobs:
         run: |
           python -m unittest discover -s . -p "*_test.py"
 
-  deploy:
-    needs: build-and-test
+deploy:
     runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
         with:
-          python-version: '3.8'
+          name: python-app
 
-      - name: Zip the application
-        run: zip -r app.zip . -x ".git"
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
 
-      - name: Deploy to Azure Web App
+      
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DD9246F3340D460CBBF2EFD227419D24 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_46BD0276BF3448A19145A3F43A154003 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B50C75E23A224C908B2C16D823D375FC }}
+
+      - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
         with:
           app-name: 'happydesk'
+          slot-name: 'Production'
           slot-name: 'production'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
