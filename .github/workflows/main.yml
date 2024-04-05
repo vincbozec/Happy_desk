@@ -35,6 +35,12 @@ jobs:
         run: |
           python -m unittest discover -s . -p "*_test.py"
 
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-app
+          path: .  # Mettez ici le chemin vers le dossier ou le fichier que vous souhaitez archiver
+
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-test
@@ -46,7 +52,7 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: python-app
           
