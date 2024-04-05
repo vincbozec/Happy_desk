@@ -63,13 +63,10 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DD9246F3340D460CBBF2EFD227419D24 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_46BD0276BF3448A19145A3F43A154003 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B50C75E23A224C908B2C16D823D375FC }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
         with:
           app-name: 'happydesk'
           slot-name: 'Production'
