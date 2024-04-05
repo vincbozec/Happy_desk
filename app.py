@@ -13,10 +13,10 @@ def home():
 def new_deployment():
   return "New deployment from CI/CD"
 
-@app.route("/info")
-def info():
-  user_agent = request.headers.get('User-Agent')
-  return f"Your user agent is: {user_agent}"
+# @app.route("/info")
+#def info():
+#  user_agent = request.headers.get('User-Agent')
+#  return f"Your user agent is: {user_agent}"
 
 
 if __name__ == "__main__":
